@@ -6,5 +6,8 @@ export default registerAs('config', () => ({
         apiKey:process.env.BUNGIE_API_KEY,
         clientId:process.env.BUNGIE_CLIENT_ID,
         clientSecret:process.env.BUNGIE_CLIENT_SECRET
+      },
+      mongoDB:{
+          connectionURI:process.env.MONGODB_URI
       }
   }));

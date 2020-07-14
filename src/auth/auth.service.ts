@@ -1,19 +1,18 @@
 import { Inject, Injectable, Req } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import Axios, { AxiosRequestConfig } from 'axios';
-import { UserMembershipData, ServerResponse } from 'bungie-api-ts/user';
-import configuration from 'src/configuration';
-import { BungieTokenDto } from './dto/bungie_token.dto';
-import { Player } from 'src/schemas/player.schema';
-import { PlayerService } from 'src/player/player.service';
-import { v4 } from "uuid";
-import { PlayerAuth } from 'src/schemas/player_auth.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { LoginResponseBodyDto } from './dto/login_response_body.dto';
-import { LoginRequestBodyDto } from './dto/login_request_body.dto';
-import { LoginDataDto } from './dto/login_data.dto';
+import Axios, { AxiosRequestConfig } from 'axios';
+import { ServerResponse, UserMembershipData } from 'bungie-api-ts/user';
 import { Request } from 'express';
+import { Model } from 'mongoose';
+import configuration from 'src/configuration';
+import { PlayerService } from 'src/player/player.service';
+import { Player } from 'src/schemas/player.schema';
+import { PlayerAuth } from 'src/schemas/player_auth.schema';
+import { v4 } from "uuid";
+import { BungieTokenDto } from './dto/bungie_token.dto';
+import { LoginDataDto } from './dto/login_data.dto';
+import { LoginRequestBodyDto } from './dto/login_request_body.dto';
 
 @Injectable()
 export class AuthService {

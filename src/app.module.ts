@@ -7,11 +7,14 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoadoutModule } from './loadout/loadout.module';
 import configuration from './configuration';
+import { MongooseConfigService } from './mongoose_config';
 
 
 @Module({ 
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/littlelight'),
+    MongooseModule.forRootAsync({
+      useClass: MongooseConfigService
+    }),
     ConfigModule.forRoot({isGlobal:true, load:[configuration]}),
     PlayerModule,
     AuthModule,
