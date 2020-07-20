@@ -22,4 +22,8 @@ export class PlayerService {
         }
         return model;
      }
+
+     async count():Promise<number>{
+         return this.model.count({});
+     }
 }

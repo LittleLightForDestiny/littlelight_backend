@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { LoadoutModule } from './loadout/loadout.module';
 import configuration from './configuration';
 import { MongooseConfigService } from './mongoose_config';
+import { StatusModule } from './status/status.module';
 
 
 @Module({ 
@@ -19,6 +20,7 @@ import { MongooseConfigService } from './mongoose_config';
     PlayerModule,
     AuthModule,
     LoadoutModule,
+    StatusModule,
     ],
   controllers: [AppController],
   providers: [AppService],

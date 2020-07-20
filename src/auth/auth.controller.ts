@@ -10,28 +10,28 @@ export class AuthController {
     ) {
     }
 
-    @Get()
-    async loginGet(@Query("code") code: string) {
-        let languageCode = 'en';
-        if (code) {
-            let res = await this.service.loginViaCode(code);
-            return res;
-        }
-        return {
-            link: this.service.getOAuthURL()
-        };
-    }
+    // @Get()
+    // async loginGet(@Query("code") code: string) {
+    //     let languageCode = 'en';
+    //     if (code) {
+    //         let res = await this.service.loginViaCode(code);
+    //         return res;
+    //     }
+    //     return {
+    //         link: this.service.getOAuthURL()
+    //     };
+    // }
 
-    @Post()
-    async loginPost(@Req() req:Request) {
-        try {
-            var tokenResponse = await this.service.login(req);
-            return { secret: tokenResponse.auth.secret };
-        } catch (e) {
-            return {
-                error: e,
-                link: this.service.getOAuthURL()
-            };
-        }
-    }
+    // @Post()
+    // async loginPost(@Req() req:Request) {
+    //     try {
+    //         var tokenResponse = await this.service.login(req);
+    //         return { secret: tokenResponse.auth.secret };
+    //     } catch (e) {
+    //         return {
+    //             error: e,
+    //             link: this.service.getOAuthURL()
+    //         };
+    //     }
+    // }
 }
