@@ -9,6 +9,7 @@ import { LoadoutModule } from './loadout/loadout.module';
 import configuration from './configuration';
 import { MongooseConfigService } from './mongoose_config';
 import { StatusModule } from './status/status.module';
+import { ItemNotesModule } from './item-notes/item-notes.module';
 
 
 @Module({ 
@@ -21,6 +22,7 @@ import { StatusModule } from './status/status.module';
     AuthModule,
     LoadoutModule,
     StatusModule,
+    ItemNotesModule,
     ],
   controllers: [AppController],
   providers: [AppService],
