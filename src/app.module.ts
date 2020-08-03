@@ -10,6 +10,7 @@ import configuration from './configuration';
 import { MongooseConfigService } from './mongoose_config';
 import { StatusModule } from './status/status.module';
 import { ItemNotesModule } from './item-notes/item-notes.module';
+import { TagModule } from './tag/tag.module';
 
 
 @Module({ 
@@ -23,6 +24,7 @@ import { ItemNotesModule } from './item-notes/item-notes.module';
     LoadoutModule,
     StatusModule,
     ItemNotesModule,
+    TagModule,
     ],
   controllers: [AppController],
   providers: [AppService],

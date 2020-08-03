@@ -4,12 +4,14 @@ import { AuthService } from 'src/auth/auth.service';
 import { LoginDataDto } from 'src/auth/dto/login_data.dto';
 import { ItemNotes } from 'src/schemas/item_notes.schema';
 import { ItemNotesService } from './item-notes.service';
+import { TagService } from 'src/tag/tag.service';
 
 @Controller('item-notes')
 export class ItemNotesController {
     constructor(
         private auth: AuthService,
-        private service: ItemNotesService
+        private service: ItemNotesService,
+        private tagsService : TagService
     ) {
 
     }
@@ -20,7 +22,8 @@ export class ItemNotesController {
             let auth: LoginDataDto;
             auth = await this.auth.login(req);
             let notes = await this.service.list(auth.player.id);
-            return { notes: notes };
+            let tags = await this.tagsService.list(auth.player.id);
+            return { notes: notes, tags: tags};
         } catch (e) {
             return {
                 error: e,
