@@ -27,7 +27,6 @@
     "@nestjs/core": "^7.0.0",
     "@nestjs/mongoose": "^7.0.1",
     "@nestjs/platform-express": "^7.0.0",
-    "@types/tunnel-ssh": "^4.1.1",
     "@types/uuid": "^8.0.0",
     "axios": "^0.19.2",
     "bungie-api-ts": "^4.2.1",
@@ -35,7 +34,6 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
-    "tunnel-ssh": "^4.1.6",
     "uuid": "^8.2.0"
   },
   "devDependencies": {
@@ -61,7 +59,9 @@
     "ts-node": "^8.6.2",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.7.4",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-node-externals": "^1.7.2",
+    "@types/tunnel-ssh": "^4.1.1",
+    "tunnel-ssh": "^4.1.6"
   },
   "jest": {
     "moduleFileExtensions": [
