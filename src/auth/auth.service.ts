@@ -54,7 +54,7 @@ export class AuthService {
 
     async loginViaSecret(credentials:LoginRequestBodyDto): Promise<LoginDataDto> {
         const auth = await this.findAuth(credentials.uuid, credentials.secret);
-        const player = await this.playerService.findOrCreate(auth.membership_id);
+        const player = await this.playerService.find(auth.membership_id);
         if(!auth || !player) throw "invalid credentials";
         return { player, auth };
     }
