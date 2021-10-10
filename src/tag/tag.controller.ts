@@ -1,6 +1,7 @@
 import { Body, Controller, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthService } from 'src/auth/auth.service';
+import { AuthorizedResponse } from 'src/entities/authorized_response';
 import { Tag } from 'src/schemas/tag.schema';
 import { TagListResponse } from './responses/tag_list.response';
 import { TagService } from './tag.service';

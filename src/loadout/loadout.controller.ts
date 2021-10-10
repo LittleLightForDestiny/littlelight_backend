@@ -1,6 +1,7 @@
 import { Body, Controller, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthService } from 'src/auth/auth.service';
+import { AuthorizedResponse } from 'src/entities/authorized_response';
 import { Loadout } from 'src/schemas/loadout.schema';
 import { LoadoutService } from './loadout.service';
 import { LoadoutListResponse } from './responses/loadout_list.response';
