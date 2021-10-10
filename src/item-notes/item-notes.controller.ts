@@ -16,12 +16,12 @@ export class ItemNotesController {
   ) {}
 
   @Post('')
-  async list(@Req() req: Request): Promise<ItemNotesResponse | ApiError> {
+  async list(@Req() req: Request): Promise<ItemNotesResponse | AuthorizedResponse | ApiError> {
     try {
       const auth: LoginDataDto = await this.auth.login(req);
       const notes = await this.service.list(auth.player.membership_id);
       const tags = await this.tagsService.list(auth.player.membership_id);
-      return { notes: notes, tags: tags };
+      return { notes: notes, tags: tags, secret:auth.auth.secret};
     } catch (e) {
       return {
         error: e,

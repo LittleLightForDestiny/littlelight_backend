@@ -10,11 +10,11 @@ export class LoadoutController {
   constructor(private auth: AuthService, private service: LoadoutService) {}
 
   @Post('')
-  async list(@Req() req: Request): Promise<LoadoutListResponse | ApiError> {
+  async list(@Req() req: Request): Promise<AuthorizedResponse | LoadoutListResponse | ApiError> {
     try {
       const auth = await this.auth.login(req);
       const loadouts = await this.service.list(auth.player.membership_id);
-      return { data: loadouts };
+      return { data: loadouts, secret:auth.auth.secret };
     } catch (e) {
       return {
         error: e,

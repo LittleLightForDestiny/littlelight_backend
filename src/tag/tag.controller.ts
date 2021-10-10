@@ -7,14 +7,14 @@ import { TagService } from './tag.service';
 
 @Controller('tag')
 export class TagController {
-  constructor(private auth: AuthService, private service: TagService) {}
+  constructor(private auth: AuthService, private service: TagService) { }
 
   @Post('')
-  async list(@Req() req: Request): Promise<TagListResponse | ApiError> {
+  async list(@Req() req: Request): Promise<AuthorizedResponse | TagListResponse | ApiError> {
     try {
       const auth = await this.auth.login(req);
       const tags = await this.service.list(auth.player.membership_id);
-      return { tags: tags };
+      return { tags: tags, secret: auth.auth.secret };
     } catch (e) {
       return {
         error: e,
