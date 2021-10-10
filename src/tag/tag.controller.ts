@@ -17,7 +17,7 @@ export class TagController {
     async list(@Req() req: Request): Promise<TagListResponse | ApiError> {
         try {
             const auth = await this.auth.login(req);
-            const tags = await this.service.list(auth.player.id);
+            const tags = await this.service.list(auth.player.membership_id);
             return { tags: tags };
         } catch (e) {
             return {
@@ -30,7 +30,7 @@ export class TagController {
     async save(@Req() req: Request, @Body() body: Tag): Promise<Tag | ApiError> {
         try {
             const auth = await this.auth.login(req);
-            const tags = await this.service.save(auth?.player?.id, body);
+            const tags = await this.service.save(auth?.player?.membership_id, body);
             return tags;
         } catch (e) {
             console.log(e);
@@ -44,7 +44,7 @@ export class TagController {
     async delete(@Req() req: Request, @Body() body: Tag): Promise<Tag | ApiError> {
         try {
             const auth = await this.auth.login(req);
-            const tag = await this.service.delete(auth?.player?.id, body);
+            const tag = await this.service.delete(auth?.player?.membership_id, body);
             return tag;
         } catch (e) {
             console.log(e);

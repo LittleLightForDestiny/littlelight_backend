@@ -31,7 +31,7 @@ export class LoadoutController {
     async save(@Req() req: Request, @Body() body: Loadout):Promise<Loadout | ApiError> {
         try {
             const auth = await this.auth.login(req);
-            const loadout = await this.service.save(auth?.player?.id, body);
+            const loadout = await this.service.save(auth.player.membership_id, body);
             return loadout;
         } catch (e) {
             console.log(e);
@@ -45,7 +45,7 @@ export class LoadoutController {
     async delete(@Req() req: Request, @Body() body: Loadout):Promise<Loadout | ApiError> {
         try {
             const auth = await this.auth.login(req);
-            const loadout = await this.service.delete(auth?.player?.id, body.assignedId);
+            const loadout = await this.service.delete(auth?.player?.membership_id, body.assignedId);
             return loadout;
         } catch (e) {
             return {

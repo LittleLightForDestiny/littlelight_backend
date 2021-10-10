@@ -22,8 +22,8 @@ export class ItemNotesController {
     async list(@Req() req: Request): Promise<ItemNotesResponse | ApiError> {
         try {
             const auth: LoginDataDto = await this.auth.login(req);
-            const notes = await this.service.list(auth.player.id);
-            const tags = await this.tagsService.list(auth.player.id);
+            const notes = await this.service.list(auth.player.membership_id);
+            const tags = await this.tagsService.list(auth.player.membership_id);
             return { notes: notes, tags: tags };
         } catch (e) {
             return {
@@ -36,7 +36,7 @@ export class ItemNotesController {
     async save(@Req() req: Request, @Body() body: ItemNotes): Promise<ItemNotes | ApiError> {
         try {
             const auth: LoginDataDto = await this.auth.login(req);
-            const notes = await this.service.save(auth?.player?.id, body);
+            const notes = await this.service.save(auth?.player?.membership_id, body);
             return notes;
         } catch (e) {
             console.log(e);
