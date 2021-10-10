@@ -8,24 +8,24 @@ export class TagService {
     constructor(@InjectModel(Tag.name) private model: Model<Tag>) {
     }
 
-    async list(player_id: string): Promise<Tag[]> {
-        let tags = await this.model.find({ player_id: player_id });
+    async list(membership_id: string): Promise<Tag[]> {
+        const tags = await this.model.find({ membership_id: membership_id });
         return tags;
     }
 
-    async save(player_id: string, tag: Tag): Promise<Tag> {
-        let existing = await this.model.findOne({ player_id: player_id, tagId:tag.tagId });
-        let predicate = { ...tag, player_id: player_id, tagId:tag.tagId};
+    async save(membership_id: string, tag: Tag): Promise<Tag> {
+        const existing = await this.model.findOne({ membership_id: membership_id, tagId:tag.tagId });
+        const predicate = { ...tag, membership_id: membership_id, tagId:tag.tagId};
         if (existing) {
             await existing.updateOne(predicate);
             return tag;
         }
-        let newTag = await this.model.create(predicate);
+        const newTag = await this.model.create(predicate);
         return newTag;
     }
 
-    async delete(player_id: string, tag: Tag): Promise<Tag> {
-        let existing = await this.model.findOne({ player_id: player_id, tagId:tag.tagId });
+    async delete(membership_id: string, tag: Tag): Promise<Tag> {
+        const existing = await this.model.findOne({ membership_id: membership_id, tagId:tag.tagId });
         if (existing) {
             await existing.deleteOne();
         }

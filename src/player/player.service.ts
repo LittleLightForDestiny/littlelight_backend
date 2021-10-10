@@ -6,12 +6,6 @@ import { Model } from 'mongoose';
 @Injectable()
 export class PlayerService {
     constructor(@InjectModel(Player.name) private model: Model<Player>) {
-
-     }
-
-     async find(id:string):Promise<Player>{
-        let model = await this.model.findById(id);
-        return model;
      }
 
      async findOrCreate(membershipId:string):Promise<Player>{

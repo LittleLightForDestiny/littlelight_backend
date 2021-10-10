@@ -3,7 +3,9 @@ import { Document } from 'mongoose';
 
 @Schema({timestamps:{createdAt:"created_at", updatedAt:"updated_at"}})
 export class Player extends Document {
-  @Prop()
+  @Prop({
+    index:true
+  })
   membership_id: string;
 
   @Prop({readonly:true})

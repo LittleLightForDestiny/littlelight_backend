@@ -5,6 +5,9 @@ import { Document } from 'mongoose';
 export class Tag extends Document {
   @Prop({index:true})
   player_id: string;
+
+  @Prop({index:true})
+  membership_id: string;
   
   @Prop()
   custom:boolean;

@@ -10,6 +10,9 @@ export interface LoadoutItem{
 export class Loadout extends Document {
   @Prop({index:true})
   player_id: string;
+
+  @Prop({index:true})
+  membership_id: string;
   
   @Prop()
   assignedId: string;

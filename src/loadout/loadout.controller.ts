@@ -1,9 +1,9 @@
-import { Controller, Get, Req, Post, Body } from '@nestjs/common';
+import { Body, Controller, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthService } from 'src/auth/auth.service';
-import { LoginDataDto } from 'src/auth/dto/login_data.dto';
-import { LoadoutService } from './loadout.service';
 import { Loadout } from 'src/schemas/loadout.schema';
+import { LoadoutService } from './loadout.service';
+import { LoadoutListResponse } from './responses/loadout_list.response';
 
 @Controller('loadout')
 export class LoadoutController {
@@ -15,12 +15,11 @@ export class LoadoutController {
     }
 
     @Post('')
-    async list(@Req() req: Request) {
+    async list(@Req() req: Request): Promise<LoadoutListResponse | ApiError> {
         try {
-            let auth: LoginDataDto;
-            auth = await this.auth.login(req);
-            let loadouts = await this.service.list(auth.player.id);
-            return {data:loadouts};
+            const auth = await this.auth.login(req);
+            const loadouts = await this.service.list(auth.player.id);
+            return { data: loadouts };
         } catch (e) {
             return {
                 error: e,
@@ -29,11 +28,10 @@ export class LoadoutController {
     }
 
     @Post('save')
-    async save(@Req() req: Request, @Body() body: Loadout) {
+    async save(@Req() req: Request, @Body() body: Loadout):Promise<Loadout | ApiError> {
         try {
-            let auth: LoginDataDto;
-            auth = await this.auth.login(req);
-            let loadout = await this.service.save(auth?.player?.id, body);
+            const auth = await this.auth.login(req);
+            const loadout = await this.service.save(auth?.player?.id, body);
             return loadout;
         } catch (e) {
             console.log(e);
@@ -44,11 +42,10 @@ export class LoadoutController {
     }
 
     @Post('delete')
-    async delete(@Req() req: Request, @Body() body: Loadout) {
+    async delete(@Req() req: Request, @Body() body: Loadout):Promise<Loadout | ApiError> {
         try {
-            let auth: LoginDataDto;
-            auth = await this.auth.login(req);
-            let loadout = await this.service.delete(auth?.player?.id, body.assignedId);
+            const auth = await this.auth.login(req);
+            const loadout = await this.service.delete(auth?.player?.id, body.assignedId);
             return loadout;
         } catch (e) {
             return {

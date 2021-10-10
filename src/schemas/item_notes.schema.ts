@@ -5,6 +5,9 @@ import { Document } from 'mongoose';
 export class ItemNotes extends Document {
   @Prop({index:true})
   player_id: string;
+
+  @Prop({index:true})
+  membership_id: string;
   
   @Prop()
   itemInstanceId: string;
