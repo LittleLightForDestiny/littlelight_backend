@@ -5,22 +5,30 @@ import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class ItemNotesService {
-    constructor(@InjectModel(ItemNotes.name) private model: Model<ItemNotes>) {
-    }
+  constructor(@InjectModel(ItemNotes.name) private model: Model<ItemNotes>) {}
 
-    async list(player_id: string): Promise<ItemNotes[]> {
-        let notes = await this.model.find({ player_id: player_id });
-        return notes;
-    }
+  async list(membership_id: string): Promise<ItemNotes[]> {
+    const notes = await this.model.find({ membership_id: membership_id });
+    return notes;
+  }
 
-    async save(player_id: string, notes: ItemNotes): Promise<ItemNotes> {
-        let existing = await this.model.findOne({ itemInstanceId: notes.itemInstanceId, itemHash: notes.itemHash, player_id: player_id });
-        let predicate = { ...notes, itemInstanceId: notes.itemInstanceId, itemHash: notes.itemHash, player_id: player_id };
-        if (existing) {
-            await existing.updateOne(predicate);
-            return notes;
-        }
-        let newNotes = await this.model.create(predicate);
-        return newNotes;
+  async save(membership_id: string, notes: ItemNotes): Promise<ItemNotes> {
+    const existing = await this.model.findOne({
+      itemInstanceId: notes.itemInstanceId,
+      itemHash: notes.itemHash,
+      membership_id: membership_id,
+    });
+    const predicate = {
+      ...notes,
+      itemInstanceId: notes.itemInstanceId,
+      itemHash: notes.itemHash,
+      membership_id: membership_id,
+    };
+    if (existing) {
+      await existing.updateOne(predicate);
+      return notes;
     }
+    const newNotes = await this.model.create(predicate);
+    return newNotes;
+  }
 }

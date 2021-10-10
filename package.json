@@ -58,7 +58,9 @@
     "ts-node": "^8.6.2",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.7.4",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-node-externals": "^1.7.2",
+    "@types/tunnel-ssh": "^4.1.1",
+    "tunnel-ssh": "^4.1.6"
   },
   "jest": {
     "moduleFileExtensions": [

@@ -4,6 +4,6 @@ import { PlayerModule } from 'src/player/player.module';
 
 @Module({
   controllers: [StatusController],
-  imports:[PlayerModule]
+  imports: [PlayerModule],
 })
 export class StatusModule {}

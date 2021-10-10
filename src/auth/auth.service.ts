@@ -9,126 +9,110 @@ import configuration from 'src/configuration';
 import { PlayerService } from 'src/player/player.service';
 import { Player } from 'src/schemas/player.schema';
 import { PlayerAuth } from 'src/schemas/player_auth.schema';
-import { v4 } from "uuid";
-import { BungieTokenDto } from './dto/bungie_token.dto';
+import { v4 } from 'uuid';
 import { LoginDataDto } from './dto/login_data.dto';
 import { LoginRequestBodyDto } from './dto/login_request_body.dto';
 
 @Injectable()
 export class AuthService {
-    constructor(@Inject(configuration.KEY) private config: ConfigType<typeof configuration>,
-        @InjectModel(PlayerAuth.name) private authModel: Model<PlayerAuth>,
-        private playerService: PlayerService) {
+  constructor(
+    @Inject(configuration.KEY) private config: ConfigType<typeof configuration>,
+    @InjectModel(PlayerAuth.name) private authModel: Model<PlayerAuth>,
+    private playerService: PlayerService,
+  ) {}
+
+  getOAuthURL(): string {
+    const languageCode = 'en';
+    return `${this.config.BungieAPI.rootURL}/${languageCode}/OAuth/Authorize?client_id=${this.config.BungieAPI.clientId}&response_type=code`;
+  }
+
+  async login(@Req() req: Request): Promise<LoginDataDto> {
+    const credentials: LoginRequestBodyDto = req.body;
+    const bungieToken: string = req.header('authorization');
+    let error: string;
+    if (credentials?.secret) {
+      try {
+        const credentialsResponse = await this.loginViaSecret(credentials);
+        return credentialsResponse;
+      } catch (e) {
+        error = e;
+      }
     }
-
-    getOAuthURL(): string {
-        let languageCode = "en";
-        return `${this.config.BungieAPI.rootURL}/${languageCode}/OAuth/Authorize?client_id=${this.config.BungieAPI.clientId}&response_type=code`;
+    if (bungieToken) {
+      try {
+        const tokenResponse = await this.loginViaToken(
+          bungieToken,
+          credentials,
+        );
+        return tokenResponse;
+      } catch (e) {
+        error = e;
+      }
     }
-
-    async login(@Req() req:Request):Promise<LoginDataDto>{
-        let credentials:LoginRequestBodyDto = req.body;
-        let bungieToken:string = req.header('authorization');
-        let error:string;
-        if(credentials?.secret){
-            try{
-                let credentialsResponse = await this.loginViaSecret(credentials);
-                return credentialsResponse;
-            }catch(e){
-                error = e;
-            }
-        }
-        if(bungieToken){
-            try{
-                var tokenResponse = await this.loginViaToken(bungieToken, credentials);
-                return tokenResponse;
-            }catch(e){
-                error = e;
-            }
-        }
-        if(error){
-            throw error;
-        }
-        throw "invalid credentials";
+    if (error) {
+      throw error;
     }
+    throw 'invalid credentials';
+  }
 
-    async loginViaSecret(credentials:LoginRequestBodyDto): Promise<LoginDataDto> {
-        let auth = await this.findAuth(credentials.uuid, credentials.secret);
-        let player = await this.playerService.find(auth.player_id);
-        if(!auth || !player) throw "invalid credentials";
-        return { player, auth };
+  async loginViaSecret(
+    credentials: LoginRequestBodyDto,
+  ): Promise<LoginDataDto> {
+    const auth = await this.findAuth(credentials.uuid, credentials.secret);
+    const player = await this.playerService.find(auth.membership_id);
+    if (!auth || !player) throw 'invalid credentials';
+    return { player, auth };
+  }
+
+  async loginViaToken(
+    token: string,
+    credentials: LoginRequestBodyDto,
+  ): Promise<LoginDataDto> {
+    let memberships: ServerResponse<UserMembershipData>;
+    try {
+      memberships = await this.getMembershipDataForCurrentUser(token);
+    } catch (e) {
+      console.log(e);
     }
+    const membership = memberships?.Response?.destinyMemberships?.filter(
+      m => m.membershipId == credentials.membership_id,
+    )[0];
+    if (!membership) throw 'Invalid credentials';
+    const player = await this.playerService.findOrCreate(
+      membership.membershipId,
+    );
+    const auth = await this.createAuth(credentials.uuid, player);
+    return { player, auth };
+  }
 
-    async loginViaToken(token: string, credentials:LoginRequestBodyDto): Promise<LoginDataDto> {
-        let memberships:ServerResponse<UserMembershipData>;
-        try{
-            memberships = await this.getMembershipDataForCurrentUser(token);
-        }catch(e){
-            console.log(e);
-        }
-        let membership = memberships?.Response?.destinyMemberships?.filter((m) => m.membershipId == credentials.membership_id)[0];
-        if (!membership) throw "Invalid credentials";
-        let player = await this.playerService.findOrCreate(membership.membershipId);
-        let auth = await this.createAuth(credentials.uuid, player);
-        return { player, auth };
-    }
+  private async findAuth(uuid: string, secret: string): Promise<PlayerAuth> {
+    return this.authModel.findOne({
+      uuid: uuid,
+      secret: secret,
+    });
+  }
 
-    private async findAuth(uuid: string, secret: string): Promise<PlayerAuth> {
-        return this.authModel.findOne({
-            uuid: uuid,
-            secret: secret,
-        });
-    }
+  private async createAuth(uuid: string, player: Player): Promise<PlayerAuth> {
+    const secret = v4();
+    return this.authModel.create({
+      uuid: uuid,
+      secret: secret,
+      membership_id: player.membership_id,
+    });
+  }
 
-    private async createAuth(uuid: string, player: Player): Promise<PlayerAuth> {
-        let secret = v4();
-        return this.authModel.create({
-            uuid: uuid,
-            secret: secret,
-            player_id: player.id
-        });
-    }
-
-    private async getTokenViaCode(code: string): Promise<BungieTokenDto> {
-        let url = `${this.config.BungieAPI.rootURL}/Platform/App/OAuth/token/`;
-        let body = `client_id=${this.config.BungieAPI.clientId}&client_secret=${this.config.BungieAPI.clientSecret}&code=${code}&grant_type=authorization_code`;
-        try {
-            let res = await Axios.post(url, body, {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
-            return res.data;
-        } catch (e) {
-            return e.data;
-        }
-    }
-
-    async loginViaCode(code: string) {
-        let auth = await this.getTokenViaCode(code);
-        if (!auth.access_token) {
-            return auth;
-        }
-
-        let memberships = await this.getMembershipDataForCurrentUser(auth.access_token);
-        return {
-            access_token: auth.access_token,
-            refresh_token: auth.refresh_token,
-            memberships: memberships.Response.destinyMemberships
-        };
-    }
-
-    private async getMembershipDataForCurrentUser(token: string): Promise<ServerResponse<UserMembershipData>> {
-        let config: AxiosRequestConfig = {
-            url: "https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/",
-            headers: {
-                'X-API-Key': this.config.BungieAPI.apiKey,
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        };
-        let res = await Axios.request(config);
-        return res.data;
-    }
-
+  private async getMembershipDataForCurrentUser(
+    token: string,
+  ): Promise<ServerResponse<UserMembershipData>> {
+    const config: AxiosRequestConfig = {
+      url: 'https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/',
+      headers: {
+        'X-API-Key': this.config.BungieAPI.apiKey,
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const res = await Axios.request(config);
+    return res.data;
+  }
 }
