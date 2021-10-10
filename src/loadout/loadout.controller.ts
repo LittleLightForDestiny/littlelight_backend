@@ -18,7 +18,7 @@ export class LoadoutController {
     async list(@Req() req: Request): Promise<LoadoutListResponse | ApiError> {
         try {
             const auth = await this.auth.login(req);
-            const loadouts = await this.service.list(auth.player.id);
+            const loadouts = await this.service.list(auth.player.membership_id);
             return { data: loadouts };
         } catch (e) {
             return {
