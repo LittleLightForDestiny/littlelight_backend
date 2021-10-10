@@ -5,25 +5,23 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class PlayerService {
-    constructor(@InjectModel(Player.name) private model: Model<Player>) {
+  constructor(@InjectModel(Player.name) private model: Model<Player>) {}
 
-     }
+  async find(membership_id: string): Promise<Player> {
+    const model = await this.model.findOne({ membership_id: membership_id });
+    return model;
+  }
 
-     async find(membership_id:string):Promise<Player>{
-        const model = await this.model.findOne({membership_id:membership_id});
-        return model;
-     }
+  async findOrCreate(membershipId: string): Promise<Player> {
+    let model = await this.model.findOne({ membership_id: membershipId });
+    if (!model) {
+      await this.model.create({ membership_id: membershipId });
+      model = await this.model.findOne({ membership_id: membershipId });
+    }
+    return model;
+  }
 
-     async findOrCreate(membershipId:string):Promise<Player>{
-        let model = await this.model.findOne({membership_id:membershipId});
-        if(!model){
-            await this.model.create({membership_id:membershipId});
-            model = await this.model.findOne({membership_id:membershipId});
-        }
-        return model;
-     }
-
-     async count():Promise<number>{
-         return this.model.count({});
-     }
+  async count(): Promise<number> {
+    return this.model.count({});
+  }
 }

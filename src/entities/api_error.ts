@@ -1,3 +1,3 @@
 interface ApiError {
-    error:any;
+  error: any;
 }

@@ -8,13 +8,10 @@ import { TagService } from './tag.service';
 @Module({
   providers: [TagService],
   controllers: [TagController],
-  exports:[
-    TagService
-  ],
+  exports: [TagService],
   imports: [
     AuthModule,
-    MongooseModule.forFeature([
-      {name:Tag.name, schema:TagSchema}])
-  ]
+    MongooseModule.forFeature([{ name: Tag.name, schema: TagSchema }]),
+  ],
 })
 export class TagModule {}

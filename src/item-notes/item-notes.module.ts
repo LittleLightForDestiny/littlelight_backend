@@ -9,12 +9,12 @@ import { ItemNotesService } from './item-notes.service';
 @Module({
   providers: [ItemNotesService],
   controllers: [ItemNotesController],
-  imports:[
+  imports: [
     AuthModule,
     TagModule,
     MongooseModule.forFeature([
-    {name:ItemNotes.name, schema:ItemNotesSchema}
-  ])],
-  
+      { name: ItemNotes.name, schema: ItemNotesSchema },
+    ]),
+  ],
 })
 export class ItemNotesModule {}

@@ -1,5 +1,5 @@
-import { Loadout } from "src/schemas/loadout.schema";
+import { Loadout } from 'src/schemas/loadout.schema';
 
-export interface LoadoutListResponse{
-    data: Loadout[];
+export interface LoadoutListResponse {
+  data: Loadout[];
 }

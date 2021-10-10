@@ -12,20 +12,19 @@ import { StatusModule } from './status/status.module';
 import { ItemNotesModule } from './item-notes/item-notes.module';
 import { TagModule } from './tag/tag.module';
 
-
-@Module({ 
+@Module({
   imports: [
     MongooseModule.forRootAsync({
-      useClass: MongooseConfigService
+      useClass: MongooseConfigService,
     }),
-    ConfigModule.forRoot({isGlobal:true, load:[configuration]}),
+    ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
     PlayerModule,
     AuthModule,
     LoadoutModule,
     StatusModule,
     ItemNotesModule,
     TagModule,
-    ],
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,5 +1,5 @@
-import { Tag } from "src/schemas/tag.schema";
+import { Tag } from 'src/schemas/tag.schema';
 
-export interface TagListResponse{
-    tags:Tag[];
+export interface TagListResponse {
+  tags: Tag[];
 }

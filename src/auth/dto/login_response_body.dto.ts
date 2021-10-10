@@ -1,3 +1,3 @@
-export interface LoginResponseBodyDto{
-    secret:string;
+export interface LoginResponseBodyDto {
+  secret: string;
 }

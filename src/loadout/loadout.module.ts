@@ -6,12 +6,11 @@ import { Loadout, LoadoutSchema } from 'src/schemas/loadout.schema';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports:[
+  imports: [
     AuthModule,
-    MongooseModule.forFeature([
-    {name:Loadout.name, schema:LoadoutSchema}
-  ])],
+    MongooseModule.forFeature([{ name: Loadout.name, schema: LoadoutSchema }]),
+  ],
   providers: [LoadoutService],
-  controllers: [LoadoutController]
+  controllers: [LoadoutController],
 })
 export class LoadoutModule {}
