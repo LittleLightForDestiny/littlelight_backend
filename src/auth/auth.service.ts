@@ -29,6 +29,7 @@ export class AuthService {
   async login(@Req() req: Request): Promise<LoginDataDto> {
     const credentials: LoginRequestBodyDto = req.body;
     const bungieToken: string = req.header('authorization');
+    const bungieApiKey: string = req.header('X-API-Key');
     let error: string;
     if (credentials?.secret) {
       try {
@@ -43,6 +44,7 @@ export class AuthService {
         const tokenResponse = await this.loginViaToken(
           bungieToken,
           credentials,
+          bungieApiKey
         );
         return tokenResponse;
       } catch (e) {
@@ -67,10 +69,11 @@ export class AuthService {
   async loginViaToken(
     token: string,
     credentials: LoginRequestBodyDto,
+    bungieApiKey: string
   ): Promise<LoginDataDto> {
     let memberships: ServerResponse<UserMembershipData>;
     try {
-      memberships = await this.getMembershipDataForCurrentUser(token);
+      memberships = await this.getMembershipDataForCurrentUser(token, bungieApiKey);
     } catch (e) {
       console.log(e);
     }
@@ -103,11 +106,13 @@ export class AuthService {
 
   private async getMembershipDataForCurrentUser(
     token: string,
+    bungieApiKey: string
   ): Promise<ServerResponse<UserMembershipData>> {
+    const key = bungieApiKey ?? this.config.BungieAPI.apiKey;
     const config: AxiosRequestConfig = {
       url: 'https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/',
       headers: {
-        'X-API-Key': this.config.BungieAPI.apiKey,
+        'X-API-Key': bungieApiKey,
         Accept: 'application/json',
         Authorization: `Bearer ${token}`,
       },
